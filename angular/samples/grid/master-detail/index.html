@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>igGrid: Master/Detail - Ignite UI Grid integration with AngularJS</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link type="text/css" href="//cdn-na.infragistics.com/jquery/20132/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+	<link type="text/css" href="//cdn-na.infragistics.com/jquery/20132/latest/css/structure/modules/infragistics.ui.shared.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="/igniteui-angular/samples/sample.css" />
+    
+<link type="text/css" href="//cdn-na.infragistics.com/jquery/20132/latest/css/structure/modules/infragistics.ui.grid.css" rel="stylesheet" />
+<link type="text/css" href="//cdn-na.infragistics.com/jquery/20132/latest/css/structure/modules/infragistics.ui.editors.css" rel="stylesheet" />
+<style>
+    [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+      display: none !important;
+    }
+</style>
+
+</head>
+<body class="container">
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Ignite UI AngularJS Directives <span class="badge alert-info">Preview</span></a> 
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/igniteui-angular/index.html">Home</a></li>
+                    <li><a href="https://github.com/IgniteUI/igniteui-angular">View on GitHub <i class="fa fa-github"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+<div ng-app="app" ng-controller="masterDetailController">
+    <h1 class="push-down-md">igGrid Master/Detail</h1>
+    <div class="alert alert-danger" data-ng-cloak data-ng-show="error != null">Oops! There's been a problem: {{error}}</div>
+    <div class="alert alert-info" data-ng-cloak data-ng-show="message.length > 0" data-ng-bind="message"></div>
+    <ig-grid id="homesGrid" 
+             data-source="homes" 
+             width="100%"  
+             primary-key="id" 
+             auto-commit="true" 
+             auto-generate-columns="false"
+             event-rendered="homesGridRendered">
+        <columns>
+            <column key="streetAddress" header-text="Address" data-type="string"></column>
+            <column key="city" header-text="City" data-type="string"></column>
+            <column key="zipCode" header-text="Zip" data-type="string"></column>
+            <column key="price" header-text="Price" data-type="number"></column>
+            <column key="id" header-text="ID" data-type="string" hidden="true"></column>
+        </columns>
+        <features>
+            <feature name="Sorting" 
+                     event-column-sorted="homesGridColumnSorted"></feature>
+            <feature name="Selection" 
+                     event-row-selection-changed="homesGridRowSelectionChanged"></feature>
+            <feature name="Paging"
+                     page-size="5"
+                     event-page-size-changed="homesGridPageSizeChanged"
+                     event-page-index-changed="homesGridPageSelectionChanged"></feature>
+        </features>
+    </ig-grid>
+    <hr>
+    <div class="row">
+        <div class="well col-sm-8" data-ng-cloak data-ng-show="selectedHome != null">
+
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Address</label>
+                    <div class="col-sm-10">
+                        <input id="addressBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="Address"
+                               data-ng-model="selectedHome.streetAddress" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cityBox" class="col-sm-2 control-label">City</label>
+                    <div class="col-sm-10">
+                      <input id="cityBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="City"
+                               data-ng-model="selectedHome.city" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bedroomsBox" class="col-sm-2 control-label">Bedrooms</label>
+                    <div class="col-sm-10">
+                      <input id="bedroomsBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="Bedrooms"
+                               data-ng-model="selectedHome.bedrooms" />
+                    </div>
+              </div>
+                <div class="form-group">
+                    <label for="bathroomsBox" class="col-sm-2 control-label">Bathrooms</label>
+                    <div class="col-sm-10">
+                      <input id="bathroomsBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="Bathrooms"
+                               data-ng-model="selectedHome.bathrooms" />
+                    </div>
+              </div>
+                <div class="form-group">
+                    <label for="sqfeetBox" class="col-sm-2 control-label">Sq. Feet</label>
+                    <div class="col-sm-10">
+                      <input id="sqfeetBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="Sq. Feet"
+                               data-ng-model="selectedHome.squareFeet" />
+                    </div>
+              </div>
+                <div class="form-group">
+                    <label for="priceBox" class="col-sm-2 control-label">Price</label>
+                    <div class="col-sm-10">
+                      <input id="priceBox" 
+                               type="text"
+                               class="form-control"
+                               placeholder="Price"
+                               data-ng-model="selectedHome.price" />
+                    </div>
+              </div>
+                <div class="form-group">
+                    <label for="notesBox" class="col-sm-2 control-label">Notes</label>
+                    <div class="col-sm-10">
+                        <textarea id="notesBox" 
+                                  class="form-control" 
+                                  placeholder="Notes"
+                                  data-ng-model="selectedHome.notes"></textarea>
+                    </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-default btn-primary" data-ng-click="save()">Save</button>
+                    <button class="btn btn-default btn-link" data-ng-click="cancel()">Cancel</button>
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+	<footer>
+        <p>
+            <a href="/igniteui-angular/index.html">Home</a> |
+            <a href="https://github.com/IgniteUI/igniteui-angular/issues">Feedback &amp; Questions</a> |
+            <a href="https://github.com/IgniteUI/igniteui-angular">Clone &amp; Fork</a>
+        </p>
+        <p class="small">For more information or to download a trial of Ignite UI, please visit: <a href="http://igniteui.com">http://igniteui.com</a></p>
+    </footer>
+
+	<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+    
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-resource.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular-mocks.js"></script>
+
+<script src="http://cdn-na.infragistics.com/jquery/20141/latest/js/infragistics.core.js"></script>
+<script src="http://cdn-na.infragistics.com/jquery/20141/latest/js/infragistics.lob.js"></script>
+
+<script src="../../../src/igniteui-angular.js"></script>
+
+<script src="app/lib/Math.uuid.js"></script>
+<script src="app/app.js"></script>
+<script src="app/services/fakeServerService.js"></script>
+<script src="app/services/dataService.js"></script>
+<script src="app/controllers/masterDetailController.js"></script>
+
+</body>
+</html>
